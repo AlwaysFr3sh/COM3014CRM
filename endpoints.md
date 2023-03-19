@@ -8,19 +8,19 @@
 
 ## Authentication Service Endpoints
 GET /user
-Returns all user data
+* Returns all user data
 
 GET /user?username=value
-Return user data for one user given a username
+* Return user data for one user given a username
 
 GET /login?username=value&password=value
-Logs in user
+* Logs in user
 
 POST /register?username=value&password=value&company=value
-Registers user
+* Registers user
 
 DELETE /delete?username=value&password=value
-Deletes user
+* Deletes user
 
 *NOTES*
 * passwords will need to be encrypted

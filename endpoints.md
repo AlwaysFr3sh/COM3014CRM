@@ -25,3 +25,4 @@ DELETE /delete?username=value&password=value
 *NOTES*
 * passwords will need to be encrypted
 * Need to ensure that a rogue hacker can’t leverage the delete user endpoint , will need some form of authentication that cannot be hacked to prevent this, hopefully encrypted password is sufficient authentication
+* Am I using query parameters correctly or should it be /login/username/password ? Surely what we have is correct?

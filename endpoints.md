@@ -7,22 +7,31 @@
 * *DELETE* to Delete a resource.
 
 ## Authentication Service Endpoints
+```
 GET /user
+```
 * Returns all user data
 
-GET /user?username=value
+```
+GET /user/<username>
+```
 * Return user data for one user given a username
 
-GET /login?username=value&password=value
+```
+GET /login/<username>/<password>
+```
 * Logs in user
 
-POST /register?username=value&password=value&company=value
+```
+POST /register/<username>/<password>
+```
 * Registers user
-
-DELETE /delete?username=value&password=value
+```
+DELETE /delete/<username>/<password>
+```
 * Deletes user
 
 *NOTES*
 * passwords will need to be encrypted
 * Need to ensure that a rogue hacker can’t leverage the delete user endpoint , will need some form of authentication that cannot be hacked to prevent this, hopefully encrypted password is sufficient authentication
-* Am I using query parameters correctly or should it be /login/username/password ? Surely what we have is correct?
+

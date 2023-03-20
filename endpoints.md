@@ -47,7 +47,7 @@ GET /<database>?search_term=value&num_results=value&sort_by=value
 GET /<database>/<entry>
 ```
 * Get specified database entry (I guess return 404 if not found?)
-*
+```
 POST /<database>
 ```
 * Creates a new database TODO: Figure out what to return when database with specified name already exists

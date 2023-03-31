@@ -7,7 +7,7 @@ app.register_blueprint(data_route)
 
 @app.route("/", methods=["GET"])
 def hello_world():
-  return "hello world!!!"
+  return "hello world!!!\n"
 
 if __name__ == "__main__":
   app.debug = True

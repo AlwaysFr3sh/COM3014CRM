@@ -1,23 +1,22 @@
-"""
-A companies data will be stored as a collection within our single database
-
-I'm not sure of the security implications here, but my intuition tells me 
-if this was a real product we were making it would be best to separate the data into completely separate
-databases.
-
-But that sounds too hard for a uni project. 
-"""
 import pymongo
-from flask import make_response
+from flask import make_response, jsonify
 from bson.objectid import ObjectId
+from bson.json_util import dumps
 
-connection_string = "mongodb+srv://tomhollo123:YxFVZ0FYVKA7ccih@cluster0.fzxqnt6.mongodb.net/?retryWrites=true&w=majority"
+def get_text(path):
+  with open(path) as f: text = f.readlines()
+  return "".join(text).replace("\n", "")
+
+secret = get_text("secret.txt")
+connection_string = f"mongodb+srv://tomhollo123:{secret}@cluster0.fzxqnt6.mongodb.net/?retryWrites=true&w=majority"
 client = pymongo.MongoClient(connection_string)
 database_name = "test_database"
 database = client[database_name]
 
+print(connection_string)
+
 # create new entry for a given collection
-def create_entry(collection_name: str, entry: dict):
+def create_entry(collection_name:str, entry:dict):
   try: 
     collection = database[collection_name]
     result = collection.insert_one(entry)
@@ -29,7 +28,7 @@ def create_entry(collection_name: str, entry: dict):
 
 # delete an entry given an object id
 # TODO: might need to write one that takes a dict and runs a delete_one on the supplied dict (received as json)
-def delete_entry(collection_name: str, entryid: str):
+def delete_entry(collection_name:str, entryid:str):
   try:
     collection = database[collection_name]
     result = collection.delete_one({'_id': ObjectId(entryid)})
@@ -38,3 +37,22 @@ def delete_entry(collection_name: str, entryid: str):
     return make_response({"message" : f"Successfully deleted item id={entryid}"}, 201)
   except Exception as e:
     return make_response({"message" : str(e)}, 404)
+
+# This one kinda sucks at the moment, might need more work
+def get_entry(collection_name:str, entryid:str):
+  try:
+    collection = database[collection_name]
+    result = collection.find_one({'_id' : ObjectId(entryid)})
+    return dumps(result) + "\n"
+  except Exception as e:
+    return make_response({"message" : str(e)}, 404)
+
+
+'''
+TODO:
+
+- hide our db key somewhere
+
+- Add authentication somewhere
+'''
+

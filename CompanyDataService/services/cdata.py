@@ -2,10 +2,7 @@ import pymongo
 from flask import make_response, jsonify
 from bson.objectid import ObjectId
 from bson.json_util import dumps
-
-def get_text(path):
-  with open(path) as f: text = f.readlines()
-  return "".join(text).replace("\n", "")
+from utilities.utilities import get_text
 
 secret = get_text("secret.txt")
 connection_string = f"mongodb+srv://tomhollo123:{secret}@cluster0.fzxqnt6.mongodb.net/?retryWrites=true&w=majority"

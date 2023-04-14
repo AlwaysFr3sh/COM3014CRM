@@ -11,8 +11,7 @@ client = pymongo.MongoClient(connection_string)
 database_name = "test_database"
 database = client[database_name]
 
-# TODO: the naming of this stuff sucks
-def search(collection:str, field="", search_term="", num_results=10):
+def get_many_entries(collection:str, field="", search_term="", num_results=10):
   try:
     collection = database[collection]
     key_regex = re.compile("\w") # the idea is that we don't care what key, we want any key that has value search_term

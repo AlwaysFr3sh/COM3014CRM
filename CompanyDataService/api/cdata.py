@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from services.cdata import create_entry, delete_entry, get_entry, search
+from services.cdata import create_entry, delete_entry, get_entry, get_many_entries
 
 data_route = Blueprint('product_route', __name__)
 
@@ -18,16 +18,24 @@ def get_collection_entry(colname, entryid):
 # GET /query_collection/<collection>?search_term=value&num_results=value&sort_by=value
 # if you curl this method with no kwargs, you need to at a '\' or a ' ' to the end to escape the return key press
 # Returns everything from that collection if search term and field are not specified
-# TODO: call find with the query value as a regex (\w) if no search_term is specified 
-# TODO: we are not doing num_results anymore 
+# TODO: fuzzy search, is it possible to ask mongodb to find documents containing a value without specifying a key
+#       this could be acheived in the future by storing a document containing all of the keys used in a collection
+#       and performing the find() query for each of them, this sounds like too much work so it's something for after
+#       the frontend is at least partially up and running
+# TODO: we are not doing num_results anymore... or are we???
 @data_route.route("/query_collection/<colname>", methods=["GET"])
 def search_collection(colname):
   #return request.args 
-  if 'field' in request.args.keys() and 'search_term' in request.args.keys():
+  field_and_searchterm = 'field' in request.args.keys() and 'search_term' in request.args.keys()
+  searchterm_only = 'field' not in request.args.keys() and 'search_term' in request.args.keys()
+  #if 'field' in request.args.keys() and 'search_term' in request.args.keys():
+  if field_and_searchterm
     field, search_term = request.args['field'], request.args['search_term']
-    ret = search(colname, field=field, search_term=search_term)
+    ret = get_many_entries(colname, field=field, search_term=search_term)
+  elif searchterm_only:
+    ret = {"message" : "this is not implemented yet bro"}
   else:
-    ret = search(colname)
+    ret = get_many_entries(colname)
     
   return ret
   #return search(colname, request.args['search_term'])

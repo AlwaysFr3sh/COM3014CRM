@@ -5,9 +5,6 @@ data_route = Blueprint('product_route', __name__)
 
 '''
 TODO:
-[ ] - make search_collection work
-[ ] - make an endpoint for updating stuff (PUT or PATCH ?)
-[ ] - update language to reflect that each company will have it's own collection in our single collection
 [ ] - update readme.md to reflect actual implemenation
 '''
 

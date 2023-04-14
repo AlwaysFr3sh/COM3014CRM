@@ -55,6 +55,19 @@ def get_entry(collection_name:str, entryid:str):
     return make_response({"error" : str(e)}, 404)
 
 
+def update_entry(collection_name:str, entryid:str, key:str, value): # TODO: is value ever not string?
+  try:
+    collection = database[collection_name]
+    entry_filter = {"_id" : ObjectId(entryid)}
+    newvalues = {"$set" : {key : value}}
+    result = collection.update_one(entry_filter, newvalues)
+    if not result.acknowledged:
+      raise Exception("Error: update operation not acknowledged")
+    return make_response({"message" : f"successfully updated item {entryid} key {key} with value {str(value)}"}, 201)
+  except Exception as e:
+    return make_response({"error" : str(e)}, 404) # TODO: 404 doesn't seem like it'll always be right
+
+
 '''
 TODO:
 

@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from services.cdata import create_entry, delete_entry, get_entry, get_many_entries
+from services.cdata import create_entry, delete_entry, get_entry, get_many_entries, update_entry
 
 data_route = Blueprint('product_route', __name__)
 
@@ -29,7 +29,7 @@ def search_collection(colname):
   field_and_searchterm = 'field' in request.args.keys() and 'search_term' in request.args.keys()
   searchterm_only = 'field' not in request.args.keys() and 'search_term' in request.args.keys()
   #if 'field' in request.args.keys() and 'search_term' in request.args.keys():
-  if field_and_searchterm
+  if field_and_searchterm:
     field, search_term = request.args['field'], request.args['search_term']
     ret = get_many_entries(colname, field=field, search_term=search_term)
   elif searchterm_only:
@@ -49,4 +49,11 @@ def create_collection_entry(colname):
 @data_route.route("/delete_entry/<colname>/<entryid>", methods=["DELETE"])
 def delete_collection_entry(colname, entryid):
   return delete_entry(colname, entryid)
+
+#/update_entry/<colname>/<entryid>?entry_key=value&entry_value=value
+@data_route.route("/update_entry/<colname>/<entryid>", methods=["PATCH"]) # I don't think we need a PUT
+def update_collection_entry(colname, entryid):
+  # TODO: some error handling here might be good?
+  key, value = request.args['entry_key'], request.args['entry_value']
+  return update_entry(colname, entryid, key, value)
 

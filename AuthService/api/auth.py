@@ -27,6 +27,48 @@ def login():
             flash('Email does not exist, please sign up to access your account.', category='error')
     return render_template("login.html", user=current_user)
 
+@auth.route('/signup',methods=['GET','POST'])
+def signup():
+    if request.method=='POST':
+        email=request.form.get('email')
+        firstName=request.form.get('firstName')
+        lastName=request.form.get('lastName')
+        password1=request.form.get('password1')
+        password2=request.form.get('password2')
+        secQuestion=request.form.get('question')
+        answer=request.form.get('answer')
+	cname=request.form.get('company_name')
+	cinfo=request.form.get('company_info')
+        print(email)
+        #print(user.email)
+        user = users.find_one({'email': email})
+
+        if user:
+            flash('User already exists, Please try logging into your account.', category='error')
+        elif len(email) < 5:
+            flash('Email must be greater than 4 characters.', category="error")
+        elif len(firstName) < 3:
+            flash('First name must be greater than 2 characters.', category="error")
+        elif len(lastName) < 3:
+            flash('Second name must be greater than 2 characters.', category="error")
+        elif password1 != password2:
+            flash('Password mismatch.', category="error")
+        elif len(password1) < 7:
+            flash('Password must be greater than 6 characters.', category="error")
+        else:
+            new_user = {
+                'email': email,
+                'firstName': firstName,
+                'lastName': lastName,
+                'secQuestion': secQuestion,
+                'answer': answer,
+                'password': generate_password_hash(password1, method='sha256')
+            }
+            users.insert_one(new_user)
+            flash('Account created.', category="success")
+            return redirect(url_for('auth.login'))
+    return render_template('signup.html', user=current_user)
+
 @auth.route('/logout')
 @login_required
 def logout():

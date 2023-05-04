@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="entry_form">
+  <form id="frm" action="" method="patch">
+    <table id="entry_table">
+    {% for key in data.keys() %}
+      {% if key != '_id' %}
+        <tr>
+          <td><label for="{{ key }}"> {{ key }} </label></td>
+          <td><input id="{{ key }}" type="text" value= "{{ data[key] }}"></td>
+        </tr> 
+      {% endif %}
+    {% endfor %}
+    </table>
+  </form>
+</div>
+{% endblock %}

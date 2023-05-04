@@ -1,0 +1,29 @@
+{% extends "base.html" %} 
+{% block content %}
+{% if session['username'] %}
+<table id="home_table">
+  <tr>
+    <th style="width: 10%">Name</th>
+    <th style="width: 25%">Company</th>
+    <th style="width: 20%">Job Title</th>
+    <th style="width: 20%">Department</th>
+    <th style="width: 10%">Phone</th>
+    <th>Status</th>
+    <th>Edit Link</th>
+  </tr> 
+{% for entry in data %}
+<tr>
+    <td> {{ entry['name'] }} </td>
+    <td> {{ entry['Company'] }} </td>
+    <td> {{ entry['Job Title'] }} </td>
+    <td> {{ entry['Department'] }} </td>
+    <td> {{ entry['Phone'] }} </td>
+    <td> {{ entry['Status'] }} </td>
+    <td><a href="{{ url_for('homepage')}}/{{ entry['_id']['$oid'] }}">edit</a></td>
+</tr>
+  {% endfor %}
+</table>
+{% else %}
+<h1> Welcome!, Please login <a href="{{ url_for('login') }}">here.</a></h1>
+{% endif %}
+{% endblock %}

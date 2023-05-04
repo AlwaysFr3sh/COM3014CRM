@@ -23,6 +23,7 @@ def login():
     if request.method == 'POST':
         if authenticate(request.form['username'], request.form['password']):
           session['username'] = request.form['username']
+          session['company'] = 'toms_test_company'
           return redirect(url_for('homepage'))
         else:
           error = 'Invalid Credentials. Please try again.'
@@ -31,13 +32,13 @@ def login():
 
 @app.route('/home')
 def homepage():
-  data = requests.get("http://127.0.0.1:5001/query_collection/toms_test_company") 
+  data = requests.get(f"http://127.0.0.1:5001/query_collection/{session['company']}") 
   json_data = data.json()
   return render_template('home.html', data=json_data) 
 
 @app.route('/home/<entryid>', methods=['GET', 'POST'])
 def entrypage(entryid):
-  data = requests.get(f"http://127.0.0.1:5001/get_entry/toms_test_company/{entryid}")
+  data = requests.get(f"http://127.0.0.1:5001/get_entry/{session['company']}/{entryid}")
   #data = {"phone" : "1234567", "email" : "shithead@gmail.com"}
   json_data = data.json()
 

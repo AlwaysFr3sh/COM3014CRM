@@ -44,9 +44,61 @@ def signup():
         cinfo=request.json['cinfo']
         
         user=User.find_by_email(email)
-
+        compny=Company.find_by_ccode(ccode)
         if user:
             resp=jsonify('User already exists, Please try logging into your account.')
+        elif compny:
+            resp=jsonify('Company already exists, try registering on behalf of the company.')
+        elif len(email) < 5:
+            resp=jsonify('Email must be greater than 4 characters.')
+        elif len(firstName) < 3:
+            resp=jsonify('First name must be greater than 2 characters.')
+        elif len(lastName) < 3:
+            resp=jsonify('Second name must be greater than 2 characters.')
+        elif password1 != password2:
+            resp=jsonify('Password mismatch.')
+        elif len(password1) < 7:
+            resp=jsonify('Password must be greater than 6 characters.')
+        elif len(ccode)<5:
+            resp=jsonify("company code cannot be less than 5 characters.")
+        else:
+            password=generate_password_hash(password1, method='sha256')
+            #Should we add ccode in User database as well to connect the databases.
+            new_user = User(email,firstName,lastName,
+                            password,secQuestion,answer,ccode)
+            new_user.save()
+           
+            # ccode=generate_password_hash(ccode,method='sha256')
+            # Thought of hashing the ccode but it gets difficult to retrieve the company details using the companycode then.
+            # Everytime we hash a text it returns a different string 
+            new_company=Company(cname,ccode,cinfo)
+            new_company.save()
+
+            resp = jsonify("User added successfully.")
+            resp.status_code=200
+        return resp
+    else:
+        return not_found()
+    
+@auth.route('/signupcompany',methods=['GET','POST'])
+def csignup():
+    if request.method=='POST':
+        email=request.json['email']
+        firstName=request.json['firstName']
+        lastName=request.json['lastName']
+        password1=request.json['password1']
+        password2=request.json['password2']
+        secQuestion=request.json['secQuestion']
+        answer=request.json['answer']
+        ccode=request.json['ccode']
+        
+        user=User.find_by_email(email)
+        compny=Company.find_by_ccode(ccode)
+        #TO-DO: Figure out whether same email id can be associated with multiple comapnies or not
+        if user:
+            resp=jsonify('User already exists, Please try logging into your account.')
+        elif compny is None:
+            resp=jsonify('Invalid company code!')
         elif len(email) < 5:
             resp=jsonify('Email must be greater than 4 characters.')
         elif len(firstName) < 3:
@@ -62,12 +114,12 @@ def signup():
         else:
             password=generate_password_hash(password1, method='sha256')
             new_user = User(email,firstName,lastName,
-                            password,secQuestion,answer)
+                            password,secQuestion,answer,ccode)
             new_user.save()
            
-            ccode=generate_password_hash(ccode,method='sha256')
-            new_company=Company(cname,ccode,cinfo,email)
-            new_company.save()
+            # ccode=generate_password_hash(ccode,method='sha256')
+            # new_company=Company(comp_code.cname,ccode,comp_code.cinfo,email)
+            # new_company.save()
 
             resp = jsonify("User added successfully.")
             resp.status_code=200

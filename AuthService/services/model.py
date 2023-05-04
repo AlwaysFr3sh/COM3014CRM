@@ -1,13 +1,11 @@
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 # from flask_login import LoginManager
-
-
 # from flask_mongoengine import MongoEngine
 # from datetime import datetime
 
 db_name="authdb"
 db_host=f"mongodb://localhost:27017/"
-# app.config["MONGODB_HOST"]=db_host
 client = MongoClient(db_host)
 db=client[db_name]
 
@@ -40,19 +38,23 @@ db=client[db_name]
 #             "user_id":self.user_id
 #         }
 class User:
-    def __init__(self, email,firstName,lastName,password):
+    def __init__(self, email,firstName,lastName,password,secQuestion,answer):
         self.email = email
         self.password = password
         self.firstName = firstName
         self.lastName = lastName
+        self.secQuestion= secQuestion
+        self.answer=answer
 
     def save(self):
         users = db.User
         user_data = {
             'email': self.email,
-            'password': self.password,
             'firstName': self.firstName,
-            'lastName': self.lastName
+            'lastName': self.lastName,
+            'password': self.password,
+            'secQuestion': self.secQuestion,
+            'answer':self.answer
         }
         user_id = users.insert_one(user_data).inserted_id
         return user_id
@@ -62,15 +64,18 @@ class User:
         users = db.User
         user_data = users.find_one({'email': email})
         if user_data:
-            user = User(user_data['email'], user_data['firstName'], user_data['lastName'],user_data['password'])
+            user = User(user_data['email'], user_data['firstName'], 
+                        user_data['lastName'], user_data['password'], user_data['secQuestion'], 
+                        user_data['answer'])
             return user
         else:
             return None
 
 class Company:
-    def __init__(self, cname, ccode, user_id):
+    def __init__(self, cname, ccode,cinfo, user_id):
         self.cname = cname
         self.ccode = ccode
+        self.cinfo = cinfo
         self.user_id = user_id
 
     def save(self):
@@ -78,6 +83,7 @@ class Company:
         company_data = {
             'cname': self.cname,
             'ccode': self.ccode,
+            'cinfo': self.cinfo,
             'user_id': self.user_id
         }
         company_id = companies.insert_one(company_data).inserted_id
@@ -88,7 +94,7 @@ class Company:
         companies = db.companies
         company_data = companies.find_one({'user_id': ObjectId(user_id)})
         if company_data:
-            company = Company(company_data['cname'], company_data['ccode'], str(company_data['user_id']))
+            company = Company(company_data['cname'], company_data['ccode'],company_data['cinfo'], str(company_data['user_id']))
             return company
         else:
             return None

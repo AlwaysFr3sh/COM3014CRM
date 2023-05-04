@@ -1,8 +1,8 @@
 from flask import Blueprint, request, flash, jsonify
-from flask.templating import render_template
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
 from services.model import User
+from services.model import Company
 
 
 auth = Blueprint('auth', __name__)
@@ -37,11 +37,12 @@ def signup():
         lastName=request.json['lastName']
         password1=request.json['password1']
         password2=request.json['password2']
-        # secQuestion=request.json.get('question')
-        # answer=request.json.get('answer')
-        # cname=request.json.get('company_name')
-        # cinfo=request.json.get('company_info')
-        #print(user.email)
+        secQuestion=request.json['secQuestion']
+        answer=request.json['answer']
+        cname=request.json['cname']
+        ccode=request.json['ccode']
+        cinfo=request.json['cinfo']
+        
         user=User.find_by_email(email)
 
         if user:
@@ -56,9 +57,18 @@ def signup():
             resp=jsonify('Password mismatch.')
         elif len(password1) < 7:
             resp=jsonify('Password must be greater than 6 characters.')
+        elif len(ccode)<5:
+            resp=jsonify("company code cannot be less than 5 characters.")
         else:
-            new_user = User(email,firstName,lastName,password=generate_password_hash(password1, method='sha256'))
+            password=generate_password_hash(password1, method='sha256')
+            new_user = User(email,firstName,lastName,
+                            password,secQuestion,answer)
             new_user.save()
+           
+            ccode=generate_password_hash(ccode,method='sha256')
+            new_company=Company(cname,ccode,cinfo,email)
+            new_company.save()
+
             resp = jsonify("User added successfully.")
             resp.status_code=200
         return resp

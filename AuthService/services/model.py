@@ -1,43 +1,94 @@
 from pymongo import MongoClient
-from bson.objectid import ObjectId
-from datetime import datetime
+# from flask_login import LoginManager
 
-client = MongoClient('mongodb://localhost:27017/')
-db = client['mydatabase']
 
+# from flask_mongoengine import MongoEngine
+# from datetime import datetime
+
+db_name="authdb"
+db_host=f"mongodb://localhost:27017/"
+# app.config["MONGODB_HOST"]=db_host
+client = MongoClient(db_host)
+db=client[db_name]
+
+# class User(db.Document):
+#     email = db.EmailField(required=True, unique=True)
+#     password = db.StringField(required=True)
+#     firstName = db.StringField(required=True)
+#     secondName = db.StringField(required=True)
+#     # secQuestion=db.StringField(required=True)
+#     # created_at = db.DateTimeField(default=datetime.utcnow)
+
+#     def to_json(self):
+#         return {
+#             "email":self.email,
+#             "password":self.password,
+#             "full_name":self.full_name,
+#             # "secQuestion":self.secQuestion
+#         }
+        
+
+# class Company(db.Document):
+#     cname = db.StringField(required=True)
+#     ccode = db.StringField(required=True,unique=True)
+#     user_id = db.ReferenceField(User, reverse_delete_rule=db.CASCADE)
+
+#     def to_json(self):
+#         return {
+#             "cname":self.cname,
+#             "ccode":self.ccode,
+#             "user_id":self.user_id
+#         }
 class User:
-    def __init__(self, email, first_name, last_name, password, sec_question, answer):
+    def __init__(self, email,firstName,lastName,password):
         self.email = email
-        self.first_name = first_name
-        self.last_name = last_name
         self.password = password
-        self.sec_question = sec_question
-        self.answer = answer
+        self.firstName = firstName
+        self.lastName = lastName
 
     def save(self):
-        users = db['users']
+        users = db.User
         user_data = {
             'email': self.email,
-            'firstName': self.first_name,
-            'lastName': self.last_name,
             'password': self.password,
-            'secQuestion': self.sec_question,
-            'answer': self.answer
+            'firstName': self.firstName,
+            'lastName': self.lastName
         }
-        result = users.insert_one(user_data)
-        return str(result.inserted_id)
+        user_id = users.insert_one(user_data).inserted_id
+        return user_id
 
     @staticmethod
-    def get_user_by_email(email):
-        users = db['users']
+    def find_by_email(email):
+        users = db.User
         user_data = users.find_one({'email': email})
         if user_data:
-            return User(
-                email=user_data['email'],
-                first_name=user_data['firstName'],
-                last_name=user_data['lastName'],
-                password=user_data['password'],
-                sec_question=user_data['secQuestion'],
-                answer=user_data['answer']
-            )
-        return None
+            user = User(user_data['email'], user_data['firstName'], user_data['lastName'],user_data['password'])
+            return user
+        else:
+            return None
+
+class Company:
+    def __init__(self, cname, ccode, user_id):
+        self.cname = cname
+        self.ccode = ccode
+        self.user_id = user_id
+
+    def save(self):
+        companies = db.Company
+        company_data = {
+            'cname': self.cname,
+            'ccode': self.ccode,
+            'user_id': self.user_id
+        }
+        company_id = companies.insert_one(company_data).inserted_id
+        return company_id
+
+    @staticmethod
+    def find_by_user_id(user_id):
+        companies = db.companies
+        company_data = companies.find_one({'user_id': ObjectId(user_id)})
+        if company_data:
+            company = Company(company_data['cname'], company_data['ccode'], str(company_data['user_id']))
+            return company
+        else:
+            return None

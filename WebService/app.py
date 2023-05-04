@@ -35,11 +35,26 @@ def homepage():
   json_data = data.json()
   return render_template('home.html', data=json_data) 
 
-@app.route('/home/<entryid>')
+@app.route('/home/<entryid>', methods=['GET', 'POST'])
 def entrypage(entryid):
   data = requests.get(f"http://127.0.0.1:5001/get_entry/toms_test_company/{entryid}")
   #data = {"phone" : "1234567", "email" : "shithead@gmail.com"}
   json_data = data.json()
+
+  if request.method == 'POST':
+    # Get data from form
+    new_data = request.form
+    # Compare to our old data
+    # we convert json values() object to list and subscript 1-n to avoid the _id which the form doesn't have
+    for key, old_value, new_value in zip(new_data.keys(), list(json_data.values())[1:], new_data.values()):
+      print(old_value, new_value)
+      if old_value != new_value:
+        params = {"entry_key" : key ,"entry_value" : new_value}
+        # patch the different data in
+        requests.patch(f"http://127.0.0.1:5001/update_entry/toms_test_company/{entryid}", params=params)
+        # Update our local value to reflect change made to the database
+        json_data[key] = new_value
+
   return render_template("entry.html", data=json_data)
   
 

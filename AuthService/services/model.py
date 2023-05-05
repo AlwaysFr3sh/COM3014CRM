@@ -5,38 +5,12 @@ from bson.objectid import ObjectId
 # from datetime import datetime
 
 db_name="authdb"
-db_host=f"mongodb://localhost:27017/"
-client = MongoClient(db_host)
+# db_host=f"mongodb://localhost:27017/"
+# client=MongoClient(db_host)
+client = MongoClient(host="test_mongo",port=27017,username="root",password="password",authSource="admin")
 db=client[db_name]
 
-# class User(db.Document):
-#     email = db.EmailField(required=True, unique=True)
-#     password = db.StringField(required=True)
-#     firstName = db.StringField(required=True)
-#     secondName = db.StringField(required=True)
-#     # secQuestion=db.StringField(required=True)
-#     # created_at = db.DateTimeField(default=datetime.utcnow)
 
-#     def to_json(self):
-#         return {
-#             "email":self.email,
-#             "password":self.password,
-#             "full_name":self.full_name,
-#             # "secQuestion":self.secQuestion
-#         }
-        
-
-# class Company(db.Document):
-#     cname = db.StringField(required=True)
-#     ccode = db.StringField(required=True,unique=True)
-#     user_id = db.ReferenceField(User, reverse_delete_rule=db.CASCADE)
-
-#     def to_json(self):
-#         return {
-#             "cname":self.cname,
-#             "ccode":self.ccode,
-#             "user_id":self.user_id
-#         }
 class User:
     def __init__(self, email,firstName,lastName,password,secQuestion,answer,ccode):
         self.email = email

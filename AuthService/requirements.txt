@@ -1,6 +1,5 @@
 flask
 pymongo
 flask_login
-flask-mongoengine
 werkzeug
 flask_mongoengine

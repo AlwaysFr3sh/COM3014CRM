@@ -1,25 +1,27 @@
 {% extends "base.html" %} 
 {% block content %}
 {% if session['username'] %}
+<a href="{{ url_for('new_entry') }}">New Entry</a>
 <table id="home_table">
   <tr>
-    <th style="width: 10%">Name</th>
+    <th style="width: 20%">Name</th>
     <th style="width: 25%">Company</th>
-    <th style="width: 20%">Job Title</th>
-    <th style="width: 20%">Department</th>
+    <th style="width: 25%">Job Title</th>
     <th style="width: 10%">Phone</th>
-    <th>Status</th>
-    <th>Edit Link</th>
+    <th style="width: 10%">Status</th>
+    <th style="width: 5%">Edit Link</th>
+    <th style="width: 5%">Delete</th>
   </tr> 
 {% for entry in data %}
 <tr>
-    <td> {{ entry['name'] }} </td>
+    <td> {{ entry['Name'] }} </td>
     <td> {{ entry['Company'] }} </td>
     <td> {{ entry['Job Title'] }} </td>
-    <td> {{ entry['Department'] }} </td>
     <td> {{ entry['Phone'] }} </td>
     <td> {{ entry['Status'] }} </td>
     <td><a href="{{ url_for('homepage')}}/{{ entry['_id']['$oid'] }}">edit</a></td>
+    {# Should we tell it what the collection name is here? #}
+    <td><a href="{{ url_for('delete_entry', entryid=entry['_id']['$oid']) }}">Delete</a></td>
 </tr>
   {% endfor %}
 </table>

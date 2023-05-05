@@ -5,6 +5,9 @@ import json
 
 app = Flask(__name__)
 
+with open('entry_template.json', 'r') as f:
+  entry_template = json.load(f)
+
 # TODO: do we need proper secret key?
 app.secret_key = 'BAD_SECRET_KEY'
 
@@ -39,7 +42,6 @@ def homepage():
 @app.route('/home/<entryid>', methods=['GET', 'POST'])
 def entrypage(entryid):
   data = requests.get(f"http://127.0.0.1:5001/get_entry/{session['company']}/{entryid}")
-  #data = {"phone" : "1234567", "email" : "shithead@gmail.com"}
   json_data = data.json()
 
   if request.method == 'POST':
@@ -48,7 +50,6 @@ def entrypage(entryid):
     # Compare to our old data
     # we convert json values() object to list and subscript 1-n to avoid the _id which the form doesn't have
     for key, old_value, new_value in zip(new_data.keys(), list(json_data.values())[1:], new_data.values()):
-      print(old_value, new_value)
       if old_value != new_value:
         params = {"entry_key" : key ,"entry_value" : new_value}
         # patch the different data in
@@ -57,7 +58,20 @@ def entrypage(entryid):
         json_data[key] = new_value
 
   return render_template("entry.html", data=json_data)
+
+
+@app.route('/new', methods = ['GET', 'POST'])
+def new_entry():
+  if request.method == 'POST':
+    entry = dict(request.form)
+    requests.post(f"http://127.0.0.1:5001/create_entry/{session['company']}", json=entry)
+    return redirect(url_for('homepage'))
+  return render_template("new_entry.html", data=entry_template)
   
+@app.route('/delete_entry/<entryid>')
+def delete_entry(entryid):
+  requests.delete(f"http://127.0.0.1:5001/delete_entry/{session['company']}/{entryid}")
+  return redirect(url_for('homepage'))
 
 if __name__ == "__main__":
   app.debug = True

@@ -5,8 +5,10 @@ from bson.objectid import ObjectId
 # from datetime import datetime
 
 db_name="authdb"
+# When local mongodb databse is connected:
 # db_host=f"mongodb://localhost:27017/"
 # client=MongoClient(db_host)
+# when docker container is running:
 client = MongoClient(host="test_mongo",port=27017,username="root",password="password",authSource="admin")
 db=client[db_name]
 
@@ -42,12 +44,14 @@ class User:
         if user_data:
             user = User(user_data['email'], user_data['firstName'], 
                         user_data['lastName'], user_data['password'], 
-                        user_data['secQuestion'], user_data['ccode'], 
-                        user_data['answer'])
+                        user_data['secQuestion'],user_data['answer'] ,user_data['ccode'])
             return user
         else:
             return None
-
+    @staticmethod
+    def upPass(email,new_password):
+        users=db.User
+        users.update_one({"email": email}, {"$set": {"password": new_password}})
 class Company:
     def __init__(self, cname, ccode,cinfo):
         self.cname = cname

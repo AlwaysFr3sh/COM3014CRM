@@ -15,7 +15,7 @@ def login():
         if len(email) < 6:
             resp=jsonify('Email must have more than 5 letters')
         user = User.find_by_email(email)
-        print(user)
+        
         if user:
             if check_password_hash(user.password, password):
                 # user_obj = User(user['_id'], user['email'], user['firstName'], user['lastName'], user['password'], user['secQuestion'], user['answer'])
@@ -23,7 +23,7 @@ def login():
                 # login_user(user_obj, remember=True)
                 # return redirect(url_for('views.feed'))
             else:
-                resp=jsonify(f'Incorrect password, try again!{user.password}')
+                resp=jsonify('Incorrect password, try again!')
         else:
             resp=jsonify('Email does not exist, please sign up to access your account.')
         return resp
@@ -38,7 +38,7 @@ def signup():
         password1=request.json['password1']
         password2=request.json['password2']
         secQuestion=request.json['secQuestion']
-        answer=request.json['answer']
+        answer1=request.json['answer']
         cname=request.json['cname']
         ccode=request.json['ccode']
         cinfo=request.json['cinfo']
@@ -64,6 +64,7 @@ def signup():
         else:
             password=generate_password_hash(password1, method='sha256')
             #Should we add ccode in User database as well to connect the databases.
+            answer=generate_password_hash(answer1,method='sha256')
             new_user = User(email,firstName,lastName,
                             password,secQuestion,answer,ccode)
             new_user.save()
@@ -89,7 +90,7 @@ def csignup():
         password1=request.json['password1']
         password2=request.json['password2']
         secQuestion=request.json['secQuestion']
-        answer=request.json['answer']
+        answer1=request.json['answer']
         ccode=request.json['ccode']
         
         user=User.find_by_email(email)
@@ -113,6 +114,7 @@ def csignup():
             resp=jsonify("company code cannot be less than 5 characters.")
         else:
             password=generate_password_hash(password1, method='sha256')
+            answer=generate_password_hash(answer1,method='sha256')
             new_user = User(email,firstName,lastName,
                             password,secQuestion,answer,ccode)
             new_user.save()
@@ -126,6 +128,37 @@ def csignup():
         return resp
     else:
         return not_found()
+    
+@auth.route('/updatePass',methods=['GET','POST'])
+def updatePass():
+    if request.method=='POST':
+        email=request.json['email']
+        secQuestion=request.json['secQuestion']
+        answer1=request.json['answer']
+        password1=request.json['password1']
+        password2=request.json['password2']
+        user=User.find_by_email(email)
+
+        if user is None:
+            resp=jsonify("User doesn't exists.")
+        elif password1 != password2:
+            resp=jsonify('Password mismatch.')
+        elif len(password1) < 7:
+            resp=jsonify('Password must be greater than 6 characters.')
+        elif secQuestion!=user.secQuestion:
+            resp=jsonify("The security question doesn't match.")
+        else:
+            
+            if check_password_hash(user.answer,answer1):
+                password=generate_password_hash(password1, method='sha256')
+                User.upPass(email,password)
+                resp=jsonify("Password updated successfully.")
+            else:
+                
+                resp=f"The security answer verification failed.{user.answer}"
+        return resp
+    else:
+        return not_found()    
     
 @auth.errorhandler(404)
 def not_found(erron=None):

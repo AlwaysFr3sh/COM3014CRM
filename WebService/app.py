@@ -1,12 +1,13 @@
-from flask import Flask, render_template, session, url_for
-from flask import redirect, url_for, request
+#!/usr/bin/env python3
+from flask import Flask, render_template, session, url_for, redirect, url_for, request
 import requests
 import json
+import sys
 
 app = Flask(__name__)
 
-with open('entry_template.json', 'r') as f:
-  entry_template = json.load(f)
+with open('config.json', 'r') as f:
+  config = json.load(f)
 
 # TODO: do we need proper secret key?
 app.secret_key = 'BAD_SECRET_KEY'
@@ -35,13 +36,17 @@ def login():
 
 @app.route('/home')
 def homepage():
-  data = requests.get(f"http://127.0.0.1:5001/query_collection/{session['company']}") 
-  json_data = data.json()
-  return render_template('home.html', data=json_data) 
+  if session.get('username'):
+    data = requests.get(f"{config['data_service_url']}/query_collection/{session['company']}") 
+    json_data = data.json()
+    ret = render_template('home.html', data=json_data) 
+  else:
+    ret = render_template('home.html')
+  return ret
 
 @app.route('/home/<entryid>', methods=['GET', 'POST'])
 def entrypage(entryid):
-  data = requests.get(f"http://127.0.0.1:5001/get_entry/{session['company']}/{entryid}")
+  data = requests.get(f"{config['data_service_url']}/get_entry/{session['company']}/{entryid}")
   json_data = data.json()
 
   if request.method == 'POST':
@@ -53,7 +58,7 @@ def entrypage(entryid):
       if old_value != new_value:
         params = {"entry_key" : key ,"entry_value" : new_value}
         # patch the different data in
-        requests.patch(f"http://127.0.0.1:5001/update_entry/toms_test_company/{entryid}", params=params)
+        requests.patch(f"{config['data_service_url']}/update_entry/toms_test_company/{entryid}", params=params)
         # Update our local value to reflect change made to the database
         json_data[key] = new_value
 
@@ -64,15 +69,19 @@ def entrypage(entryid):
 def new_entry():
   if request.method == 'POST':
     entry = dict(request.form)
-    requests.post(f"http://127.0.0.1:5001/create_entry/{session['company']}", json=entry)
+    requests.post(f"{config['data_service_url']}/create_entry/{session['company']}", json=entry)
     return redirect(url_for('homepage'))
-  return render_template("new_entry.html", data=entry_template)
+  return render_template("new_entry.html", data=config["default_fields"])
   
 @app.route('/delete_entry/<entryid>')
 def delete_entry(entryid):
-  requests.delete(f"http://127.0.0.1:5001/delete_entry/{session['company']}/{entryid}")
+  requests.delete(f"{config['data_service_url']}/delete_entry/{session['company']}/{entryid}")
   return redirect(url_for('homepage'))
 
 if __name__ == "__main__":
-  app.debug = True
-  app.run(port=5002, debug=True)
+  if len(sys.argv) > 1 and sys.argv[1] == "-d":
+    app.debug = True
+    app.run(port=config["port"], debug=True)
+  else:
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=config["port"])

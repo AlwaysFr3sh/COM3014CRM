@@ -13,7 +13,7 @@ def hello_world():
 if __name__ == "__main__":
   if len(sys.argv) > 1 and sys.argv[1] == "-debug":
     app.debug = True
-    app.run(port=5001, debug=True)
+    app.run(port=5003, debug=True)
   else:
     from waitress import serve
     serve(app, host="0.0.0.0", port=5003)

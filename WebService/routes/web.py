@@ -13,7 +13,7 @@ def authenticate(email:str, password:str):
   user_credentials={"email":email,"password":password}
   login=requests.post(f"{config['auth_service_url']}/login",json=user_credentials)
   authenticated = login.status_code==200
-  company_name = "TEST"
+  company_name = ""
   if authenticated:
     company_name = login.json()['cname']
   
@@ -65,7 +65,7 @@ def entrypage(entryid):
       if old_value != new_value:
         params = {"entry_key" : key ,"entry_value" : new_value}
         # patch the different data in
-        requests.patch(f"{config['data_service_url']}/update_entry/toms_test_company/{entryid}", params=params)
+        requests.patch(f"{config['data_service_url']}/update_entry/{session['company']}/{entryid}", params=params)
         # Update our local value to reflect change made to the database
         json_data[key] = new_value
 
@@ -85,3 +85,8 @@ def delete_entry(entryid):
   requests.delete(f"{config['data_service_url']}/delete_entry/{session['company']}/{entryid}")
   return redirect(url_for('web.homepage'))
 
+@web.route('/logout')
+def log_out():
+  session.pop('username')
+  session.pop('company')
+  return redirect(url_for('web.homepage'))

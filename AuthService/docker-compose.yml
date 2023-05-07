@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  db:
+    image: mongo:latest
+    hostname: test_mongo
+    environment: 
+      - MONGO_INITDB_DATABASE=authdb
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    ports:
+      - 27017:27017
+  app:
+    build: .
+    command: python -u app.py
+    ports: 
+      - "5001:5001"
+    volumes:
+      - .:/app
+    depends_on:
+      - db

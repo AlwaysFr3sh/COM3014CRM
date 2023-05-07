@@ -1,0 +1,5 @@
+flask
+pymongo
+flask_login
+werkzeug
+flask_mongoengine

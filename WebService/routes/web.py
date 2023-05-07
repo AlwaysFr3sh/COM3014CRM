@@ -66,10 +66,10 @@ def new_entry():
   if request.method == 'POST':
     entry = dict(request.form)
     requests.post(f"{config['data_service_url']}/create_entry/{session['company']}", json=entry)
-    return redirect(url_for('homepage'))
+    return redirect(url_for('web.homepage'))
   return render_template("new_entry.html", data=config["default_fields"])
   
 @web.route('/delete_entry/<entryid>')
 def delete_entry(entryid):
   requests.delete(f"{config['data_service_url']}/delete_entry/{session['company']}/{entryid}")
-  return redirect(url_for('homepage'))
+  return redirect(url_for('web.homepage'))

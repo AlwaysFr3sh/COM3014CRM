@@ -1,0 +1,74 @@
+#entry_form {
+  text-align:left;
+  vertical-align:center;
+  margin: 20%;
+}
+
+#entry_table {
+  width: 100%;
+}
+
+input { 
+  width: 100%
+}
+
+#entry_form input[type=text] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 4px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+/*#frm {
+  display: inline-block;
+  vertical-align: center;
+  line-height: 14px;
+}
+
+
+
+.field { 
+  display: flex;
+}*/
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* Change the link color to #111 (black) on hover */
+li a:hover {
+  background-color: #111;
+}
+
+
+
+#home_table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+#home_table th {
+  background-color: grey;
+}
+
+#home_table tr:nth-child(even) {
+  background-color: #d0f7db;
+}

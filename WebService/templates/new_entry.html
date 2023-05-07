@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="entry_form">
+  {# our method here is post because patch isn't allowed in html forms apparently #}
+  <form id="frm" action="" method="post">
+    <table id="entry_table">
+    {% for field in data['fields'] %}
+      <tr>
+        <td><label for="{{ field }}"> {{ field }} </label></td>
+        <td><input name="{{ field }}" type="text" value= ""></td>
+      </tr> 
+    {% endfor %}
+    </table>
+    <input class="btn btn-default" type="submit" value="entry">
+  </form>
+</div>
+{% endblock %}

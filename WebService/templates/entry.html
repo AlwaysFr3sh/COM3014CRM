@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="entry_form">
+  {# our method here is post because patch isn't allowed in html forms apparently #}
+  <form id="frm" action="" method="post">
+    <table id="entry_table">
+    {% for key in data.keys() %}
+      {% if key != '_id' %}
+        <tr>
+          <td><label for="{{ key }}"> {{ key }} </label></td>
+          <td><input name="{{ key }}" type="text" value= "{{ data[key] }}"></td>
+        </tr> 
+      {% endif %}
+    {% endfor %}
+    </table>
+    <input class="btn btn-default" type="submit" value="entry">
+  </form>
+</div>
+{% endblock %}

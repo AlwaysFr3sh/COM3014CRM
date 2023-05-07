@@ -1,4 +1,4 @@
-from flask import Blueprint, request, flash, jsonify
+from flask import Blueprint, request, flash, jsonify,make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
 from services.model import User
@@ -14,18 +14,22 @@ def login():
         password = request.json['password']
         if len(email) < 6:
             resp=jsonify('Email must have more than 5 letters')
+            resp.status_code=401
         user = User.find_by_email(email)
+        company = Company.find_by_ccode(user.ccode)
         
         if user:
             if check_password_hash(user.password, password):
                 # user_obj = User(user['_id'], user['email'], user['firstName'], user['lastName'], user['password'], user['secQuestion'], user['answer'])
-                resp=jsonify('Logged in successfully.')
+                resp=make_response({"message" : 'Logged in successfully.', 'cname' : company.cname},200)
                 # login_user(user_obj, remember=True)
                 # return redirect(url_for('views.feed'))
             else:
                 resp=jsonify('Incorrect password, try again!')
+                resp.status_code=401
         else:
             resp=jsonify('Email does not exist, please sign up to access your account.')
+            resp.status_code=404
         return resp
     return not_found()
 

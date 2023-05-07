@@ -9,8 +9,15 @@ with open('config.json', 'r') as f:
 
 
 # dummy authentication until we implement it 
-def authenticate(username:str, password:str):
-  return True
+def authenticate(email:str, password:str):
+  user_credentials={"email":email,"password":password}
+  login=requests.post(f"{config['auth_service_url']}/login",json=user_credentials)
+  authenticated = login.status_code==200
+  company_name = "TEST"
+  if authenticated:
+    company_name = login.json()['cname']
+  
+  return authenticated, company_name
 
 @web.route('/')
 def hello():
@@ -21,9 +28,13 @@ def hello():
 def login():
     error = None
     if request.method == 'POST':
-        if authenticate(request.form['username'], request.form['password']):
+        authenticated, company_name = authenticate(request.form['username'], request.form['password'])
+        #if authenticate(request.form['username'], request.form['password']):
+        print(company_name)
+        if authenticated:
           session['username'] = request.form['username']
-          session['company'] = 'toms_test_company'
+          session['company'] = company_name
+          
           return redirect(url_for('web.homepage'))
         else:
           error = 'Invalid Credentials. Please try again.'
@@ -66,10 +77,10 @@ def new_entry():
   if request.method == 'POST':
     entry = dict(request.form)
     requests.post(f"{config['data_service_url']}/create_entry/{session['company']}", json=entry)
-    return redirect(url_for('homepage'))
+    return redirect(url_for('web.homepage'))
   return render_template("new_entry.html", data=config["default_fields"])
   
 @web.route('/delete_entry/<entryid>')
 def delete_entry(entryid):
   requests.delete(f"{config['data_service_url']}/delete_entry/{session['company']}/{entryid}")
-  return redirect(url_for('homepage'))
+  return redirect(url_for('web.homepage'))

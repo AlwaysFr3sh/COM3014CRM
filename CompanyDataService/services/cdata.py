@@ -5,8 +5,8 @@ from bson.json_util import dumps
 from utilities.utilities import get_text
 import re
 
-secret = get_text("secret.txt")
-connection_string = f"mongodb+srv://tomhollo123:{secret}@cluster0.fzxqnt6.mongodb.net/?retryWrites=true&w=majority"
+# secret = get_text("secret.txt")
+connection_string = "mongodb://localhost:27017/"
 client = pymongo.MongoClient(connection_string)
 database_name = "test_database"
 database = client[database_name]

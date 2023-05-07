@@ -29,7 +29,7 @@ def create_entry(collection_name:str, entry:dict):
     result = collection.insert_one(entry)
     if not result.acknowledged:
       raise Exception("Error: Insertion operation not acknowledged")
-    return make_response({"message" : f"Successfully inserted item id={result.inserted_id}"}, 201) 
+    return make_response({"message" : f"Successfully inserted item id={result.inserted_id}", "id" : f"{result.inserted_id}"}, 201) 
   except Exception as e:
     return make_response({"error" : str(e)}, 404)
 

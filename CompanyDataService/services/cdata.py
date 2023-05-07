@@ -16,7 +16,7 @@ def get_many_entries(collection:str, field="", search_term="", num_results=10):
     collection = database[collection]
     key_regex = re.compile("\w") # the idea is that we don't care what key, we want any key that has value search_term
     #query = {key_regex : search_term} if search_term is not "" else {}
-    query = {field : search_term} if field is not "" else {}
+    query = {field : search_term} if field != "" else {}
     result = collection.find(query)
     return dumps(result) + "\n"
   except Exception as e:

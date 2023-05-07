@@ -84,3 +84,4 @@ def new_entry():
 def delete_entry(entryid):
   requests.delete(f"{config['data_service_url']}/delete_entry/{session['company']}/{entryid}")
   return redirect(url_for('web.homepage'))
+

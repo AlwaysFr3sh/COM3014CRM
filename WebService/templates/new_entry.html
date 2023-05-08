@@ -2,16 +2,44 @@
 {% block content %}
 <div id="entry_form">
   {# our method here is post because patch isn't allowed in html forms apparently #}
-  <form id="frm" action="" method="post">
-    <table id="entry_table">
-    {% for field in data['fields'] %}
-      <tr>
-        <td><label for="{{ field }}"> {{ field }} </label></td>
-        <td><input name="{{ field }}" type="text" value= ""></td>
-      </tr> 
-    {% endfor %}
-    </table>
-    <input class="btn btn-default" type="submit" value="entry">
+  <form>
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" id="name" name="name">
+    </div>
+    <div class="form-group">
+      <label for="company">Company</label>
+      <input type="text" class="form-control" id="company" name="company">
+    </div>
+    <div class="form-group">
+      <label for="job-title">Job Title</label>
+      <input type="text" class="form-control" id="job-title" name="job-title">
+    </div>
+    <div class="form-group">
+      <label for="department">Department</label>
+      <input type="text" class="form-control" id="department" name="department">
+    </div>
+    <div class="form-group">
+      <label for="phone">Phone</label>
+      <input type="tel" class="form-control" id="phone" name="phone">
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" class="form-control" id="email" name="email">
+    </div>
+    <div class="form-group">
+      <label for="website">Website</label>
+      <input type="url" class="form-control" id="website" name="website">
+    </div>
+    <div class="form-group">
+      <label for="status">Status</label>
+      <select class="form-control" id="status" name="status">
+        <option value="prospect">Prospect</option>
+        <option value="client">Client</option>
+        <option value="inactive">Inactive</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
   </form>
 </div>
 {% endblock %}

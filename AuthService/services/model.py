@@ -6,10 +6,10 @@ from bson.objectid import ObjectId
 
 db_name="authdb"
 # When local mongodb databse is connected:
-db_host=f"mongodb://localhost:27017/"
-client=MongoClient(db_host)
+# db_host=f"mongodb://localhost:27017/"
+# client=MongoClient(db_host)
 # when docker container is running:
-# client = MongoClient(host="test_mongo",port=27017,username="root",password="password",authSource="admin")
+client = MongoClient(host="auth_mongo",port=27017,username="root",password="password",authSource="admin")
 db=client[db_name]
 
 
@@ -71,6 +71,7 @@ class Company:
         company_id = companies.insert_one(company_data).inserted_id
         return company_id
 
+    
     @staticmethod
     def find_by_ccode(user_id):
         companies = db.Company

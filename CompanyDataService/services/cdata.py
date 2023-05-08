@@ -5,7 +5,7 @@ from bson.json_util import dumps
 from utilities.utilities import get_text
 import re
 
-# secret = get_text("secret.txt")
+
 # connection_string = "mongodb://localhost:27017/"
 # client = pymongo.MongoClient(connection_string)
 

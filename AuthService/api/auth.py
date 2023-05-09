@@ -23,7 +23,9 @@ def login():
             company = Company.find_by_ccode(user.ccode)
             if check_password_hash(user.password, password):
                 # user_obj = User(user['_id'], user['email'], user['firstName'], user['lastName'], user['password'], user['secQuestion'], user['answer'])
-                resp=make_response({"message" : 'Logged in successfully.', 'cname' : company.cname},200)
+                #resp=make_response({"message" : 'Logged in successfully.', 'cname' : company.cname},200)
+                resp = jsonify({"message" : 'Logged in successfully.', 'cname' : company.cname})
+                resp.status_code = 200
                 # login_user(user_obj, remember=True)
                 # return redirect(url_for('views.feed'))
                 

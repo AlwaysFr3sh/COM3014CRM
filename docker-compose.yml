@@ -12,6 +12,7 @@ services:
       - 27017:27017
   auth:
     build: ./AuthService
+    hostname: auth
     command: python -u app.py
     ports: 
       - "5001:5001"
@@ -19,11 +20,13 @@ services:
       - authdb
   web:
     build: ./WebService
+    hostname: web
     command: python app.py -debug
     ports:
       - "5002:5002"
   company:
     build: ./CompanyDataService
+    hostname: company
     command: ./app.py
     ports:
       - "5003:5003"

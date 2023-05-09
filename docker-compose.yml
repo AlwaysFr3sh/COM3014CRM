@@ -3,7 +3,7 @@ version: '3.9'
 services:
   authdb:
     image: mongo:latest
-    hostname: auth_mongo
+    
     environment: 
       - MONGO_INITDB_DATABASE=authdb
       - MONGO_INITDB_ROOT_USERNAME=root
@@ -31,7 +31,7 @@ services:
       - companydb
   companydb:
     image: mongo:latest
-    hostname: company_mongo
+    
     environment: 
       - MONGO_INITDB_DATABASE=companydb
       - MONGO_INITDB_ROOT_USERNAME=root

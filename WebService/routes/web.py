@@ -23,7 +23,7 @@ def authenticate(email:str, password:str):
   company_name = login.json()['message']
   if authenticated:
     company_name = login.json()['cname']
-    
+      
     
   return authenticated, company_name,status
 

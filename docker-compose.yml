@@ -1,15 +1,17 @@
 version: '3.9'
 
 services:
-  authdb:
+  auth_mongo:
     image: mongo:latest
-    
+    hostname: auth_mongo
     environment: 
       - MONGO_INITDB_DATABASE=authdb
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=password
     ports:
       - 27017:27017
+    # networks:
+    #   - docker_network
   auth:
     build: ./AuthService
     hostname: auth
@@ -17,13 +19,19 @@ services:
     ports: 
       - "5001:5001"
     depends_on:
-      - authdb
-  web:
-    build: ./WebService
-    hostname: web
-    command: python app.py -debug
+      - auth_mongo
+
+    # networks:
+    #   - docker_network
+  company_mongo:
+    image: mongo:latest
+    hostname: company_mongo
+    environment: 
+      - MONGO_INITDB_DATABASE=companydb
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=password
     ports:
-      - "5002:5002"
+      - 27018:27018
   company:
     build: ./CompanyDataService
     hostname: company
@@ -31,14 +39,21 @@ services:
     ports:
       - "5003:5003"
     depends_on:
-      - companydb
-  companydb:
-    image: mongo:latest
-    
-    environment: 
-      - MONGO_INITDB_DATABASE=companydb
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=password
-    ports:
-      - 27018:27018
-    
+      - company_mongo
+    # networks:
+    #   - docker_network
+  
+    # networks:
+    #   - docker_network
+  web:
+      build: ./WebService
+      hostname: web
+      command: python app.py -debug
+      ports:
+        - "5002:5002"
+      links:
+        - company
+        - auth
+
+      # networks:
+      # - docker_network

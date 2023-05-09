@@ -6,8 +6,8 @@ from bson.objectid import ObjectId
 
 db_name="authdb"
 # When local mongodb databse is connected:
-#db_host=f"mongodb://localhost:27017/"
-#client=MongoClient(db_host)
+# db_host=f"mongodb://localhost:27017/"
+# client=MongoClient(db_host)
 # when docker container is running:
 client = MongoClient(host="auth_mongo",port=27017,username="root",password="password",authSource="admin")
 db=client[db_name]

@@ -16,4 +16,4 @@ db.createUser({user: 'root', pwd: 'password', roles: [{role: 'dbOwner', db: 'com
 EOF
 
 # Start the Flask application
-   
+./app.py -debug

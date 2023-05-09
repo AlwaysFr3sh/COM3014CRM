@@ -16,7 +16,7 @@ def hello():
 # dummy authentication until we implement it 
 def authenticate(email:str, password:str):
   user_credentials={"email":email,"password":password}
-  login=requests.post(f"{config['auth_service_url']}/login",json=user_credentials,timeout=10)
+  login=requests.post(f"{config['auth_service_url']}/login",json=user_credentials)
   
   authenticated = login.status_code==200
   status=login.status_code
@@ -56,11 +56,11 @@ def signup():
   status=None
   if request.method== 'POST':
     entry = dict(request.form)
-    signin=requests.post(f"{config['auth_service_url']}/signup", json=entry,timeout=10)
+    signin=requests.post(f"{config['auth_service_url']}/signup", json=entry)
     status=signin.status_code
     message=signin.json()['message']
     if signin.status_code==200:
-      return render_template('login.html',error=message,status=status,user=session)
+      return redirect(url_for('web.login'))
     else:
       error=message
   return render_template("signup.html",error=error,status=status,user=session)
@@ -71,7 +71,7 @@ def signupcompany():
   status=None
   if request.method== 'POST':
     entry = dict(request.form)
-    signin=requests.post(f"{config['auth_service_url']}/signupcompany", json=entry,timeout=10)
+    signin=requests.post(f"{config['auth_service_url']}/signupcompany", json=entry)
     status=signin.status_code
     message=signin.json()['message']
     if signin.status_code==200:
@@ -100,10 +100,13 @@ def homepage():
   if session.get('email'):
     data = requests.get(f"{config['data_service_url']}/query_collection/{session['company']}") 
     json_data = data.json()
-    ret = render_template('home.html', data=json_data,user=session) 
+    if data:
+      return(render_template('home.html', data=json_data,user=session)) 
+    else:
+      return(render_template('home.html',user=session))
   else:
-    ret = render_template('home.html',user=session)
-  return ret
+  
+    return(render_template('home.html',user=session))
 
 @web.route('/home/<entryid>', methods=['GET', 'POST'])
 def entrypage(entryid):
@@ -138,7 +141,7 @@ def new_entry():
 @web.route('/delete_entry/<entryid>')
 def delete_entry(entryid):
   requests.delete(f"{config['data_service_url']}/delete_entry/{session['company']}/{entryid}")
-  return redirect(url_for('web.homepage'),user=session)
+  return redirect(url_for('web.homepage'))
 
 @web.route('/about')
 def about():

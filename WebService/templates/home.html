@@ -1,7 +1,6 @@
 {% extends "base.html" %} 
 {% block content %}
-{% if session['email'] %}
-<br><br>
+<br><br><br><br>
 <table id="home_table">
   <tr>
     <th style="width: 20%">Name</th>
@@ -25,12 +24,7 @@
 </tr>
   {% endfor %}
 </table>
-{% else %}
-<div id="entry_form">
 
-  <img src="\static\welcome.png" class="rounded mx-auto d-block img-fluid" width="1000" height="450">
-  <img src="\static\heading002.png" class="rounded mx-auto d-block img-fluid" width="642" height="153">
-  
-</div>
-{% endif %}
+
+
 {% endblock %}

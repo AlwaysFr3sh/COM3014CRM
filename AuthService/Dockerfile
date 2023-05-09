@@ -5,4 +5,4 @@ RUN pip install -r requirements.txt
 ENV MONGO_URI mongodb://mongo:27017/authdb
 EXPOSE 5001
 RUN chmod +x /app/start.sh
-CMD ["./start.sh"]
+CMD ["./start.sh", "-h", "0.0.0.0", "--port", "5001"]

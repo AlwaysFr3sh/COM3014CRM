@@ -10,15 +10,17 @@ auth = Blueprint('auth', __name__)
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
+        resp={}
         email = request.json['email']
         password = request.json['password']
         if len(email) < 6:
             resp=jsonify({"message":'Email must have more than 5 letters'})
             resp.status_code=401
         user = User.find_by_email(email)
-        company = Company.find_by_ccode(user.ccode)
+        
         
         if user:
+            company = Company.find_by_ccode(user.ccode)
             if check_password_hash(user.password, password):
                 # user_obj = User(user['_id'], user['email'], user['firstName'], user['lastName'], user['password'], user['secQuestion'], user['answer'])
                 resp=make_response({"message" : 'Logged in successfully.', 'cname' : company.cname},200)
@@ -30,7 +32,7 @@ def login():
                 resp.status_code=401
         else:
             resp=jsonify({"message":'Email does not exist, please sign up to access your account.'})
-            resp.status_code=404
+            resp.status_code=401
         return resp
     return not_found()
 
@@ -45,6 +47,7 @@ def getuser():
 @auth.route('/signup',methods=['GET','POST'])
 def signup():
     if request.method=='POST':
+        resp={}
         email=request.json['email']
         firstName=request.json['firstName']
         lastName=request.json['lastName']
@@ -105,6 +108,7 @@ def signup():
 @auth.route('/signupcompany',methods=['GET','POST'])
 def csignup():
     if request.method=='POST':
+        resp={}
         email=request.json['email']
         firstName=request.json['firstName']
         lastName=request.json['lastName']
@@ -161,6 +165,7 @@ def csignup():
 @auth.route('/updatePass',methods=['GET','POST'])
 def updatePass():
     if request.method=='POST':
+        resp={}
         email=request.json['email']
         secQuestion=request.json['secQuestion']
         answer1=request.json['answer']
@@ -170,21 +175,27 @@ def updatePass():
 
         if user is None:
             resp=jsonify({"message":"User doesn't exists."})
+            resp.status_code=401
         elif password1 != password2:
-            resp=jsonify({"message"'Password mismatch.'})
+            resp=jsonify({"message":'Password mismatch.'})
+            resp.status_code=401
         elif len(password1) < 7:
-            resp=jsonify({"message"'Password must be greater than 6 characters.'})
+            resp=jsonify({"message":'Password must be greater than 6 characters.'})
+            resp.status_code=401
         elif secQuestion!=user.secQuestion:
-            resp=jsonify({"message""The security question doesn't match."})
+            resp=jsonify({"message":"The security question doesn't match."})
+            resp.status_code=401
         else:
             
             if check_password_hash(user.answer,answer1):
                 password=generate_password_hash(password1, method='sha256')
                 User.upPass(email,password)
-                resp=jsonify({"message""Password updated successfully."})
+                resp=jsonify({"message":'Password updated successfully.'})
+                resp.status_code=200
             else:
                 
-                resp=jsonify({"message""The security answer verification failed"})
+                resp=jsonify({"message":'The security answer verification failed'})
+                resp.status_code=401
         return resp
     else:
         return not_found()    

@@ -6,10 +6,10 @@ from utilities.utilities import get_text
 import re
 
 
-# connection_string = "mongodb://localhost:27017/"
-# client = pymongo.MongoClient(connection_string)
+connection_string = "mongodb://localhost:27017/"
+client = pymongo.MongoClient(connection_string)
 
-client = pymongo.MongoClient(host="company_mongo",port=27018,username="root",password="password",authSource="admin")
+# client = pymongo.MongoClient(host="company_mongo",port=27018,username="root",password="password",authSource="admin")
 
 database_name = "companydb"
 database = client[database_name]

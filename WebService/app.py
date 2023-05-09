@@ -20,7 +20,7 @@ app.secret_key = 'BAD_SECRET_KEY'
 if __name__ == "__main__":
   if len(sys.argv) > 1 and sys.argv[1] == "-debug":
     app.debug = True
-    app.run(port="5002", debug=True,host="0.0.0.0")
+    app.run(port="5002", debug=True, host="0.0.0.0")
   else:
     from waitress import serve
     serve(app, host="0.0.0.0", port="5002")

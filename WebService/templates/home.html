@@ -26,6 +26,11 @@
   {% endfor %}
 </table>
 {% else %}
-<h1> Welcome!, Please login <a href="{{ url_for('web.login') }}">here.</a></h1>
+<div id="entry_form">
+
+  <img src="\static\welcome.png" class="rounded mx-auto d-block img-fluid" width="1000" height="450">
+  <img src="\static\heading002.png" class="rounded mx-auto d-block img-fluid" width="642" height="153">
+  
+</div>
 {% endif %}
 {% endblock %}

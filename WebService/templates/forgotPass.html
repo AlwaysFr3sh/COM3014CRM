@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block mainbody %}
+<div class="login-form">
+  <img src="\static\heading002.png" class="rounded mx-auto d-block img-fluid" width="642" height="153">
+  {% if error %}
+  {% if status==200 %}
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    {{error}}
+   <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+  </div>
+   {% else %}
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{error}} 
+    <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+  </div>
+  {% endif %}
+  {% endif %} 
+    <form method="POST">
+        <h2 class="text-center">Forgot Password</h2>       
+        <div class="form-group">
+            <input type="email" class="form-control" placeholder="Email" required="required" name="email",required="required">
+        </div>
+        <div class="form-group">
+            <select class="form-select form-control" aria-label="Default select example" name="secQuestion",required="required">
+                <option selected>Select a security question:</option>
+                <option value="1">What is the name of a college you applied to but didn’t attend?</option>
+                <option value="2">Where was the destination of your most memorable school field trip?</option>
+                <option value="3">What was the name of your first stuffed toy?</option>
+                <option value="4">What was the name of the first school you remember attending?</option>
+                <option value="5">What was your driving instructor's first name?</option>
+              </select>
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Answer" required="required" name="answer".required="required">
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" placeholder="Password" required="required" name="password1".required="required">
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" placeholder="Re-enter Password" required="required" name="password2",required="required">
+        </div>
+        
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-block">Submit</button>
+        </div>
+               
+    </form>
+    
+</div>
+<br><br><br><br>
+{% endblock %}
